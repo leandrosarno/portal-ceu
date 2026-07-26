@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Portal de Atividades | Centro Educacional</title>
+    <title>CEU</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -229,6 +229,7 @@
 
         async function buscarDadosDoGoogle() {
             try {
+                // ⭐ DESTRUIDOR DE CACHE TOTAL E ABSOLUTO
                 const antiCache = new Date().getTime() + Math.random();
                 const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache, {
                     cache: 'no-store'
@@ -290,8 +291,9 @@
             };
 
             let filtradas = turmasGlobais.filter(t => {
-                const titulo = getColValue(t, map.titleColumn, 0, /turma|atividade|curso/i) || `Atividade ${t._originalIndex + 1}`;
-                const idInterno = `turma_${t._originalIndex + 1}_${titulo.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                // IDENTIDADE BLINDADA PELO CÓDIGO DA PRIMEIRA COLUNA
+                const baseIdStr = t[keys[0]] !== undefined ? String(t[keys[0]]) : '';
+                const idInterno = `turma_${t._originalIndex + 1}_${baseIdStr.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 
                 if (setupGlobal.hiddenIdsArray && setupGlobal.hiddenIdsArray.includes(idInterno)) return false;
 
@@ -357,7 +359,10 @@
 
                 const titulo = getColValue(map.titleColumn, 0, /turma|atividade|curso/i) || `Atividade ${t._originalIndex + 1}`;
                 const category = getColValue(map.categoryColumn, 4, /núcleo|centro/i) || 'Geral';
-                const idInterno = `turma_${t._originalIndex + 1}_${titulo.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                
+                // ⭐ A IDENTIDADE BLINDADA (Usa sempre a Coluna 1 da Planilha Nativa)
+                const baseIdStr = t[keys[0]] !== undefined ? String(t[keys[0]]) : '';
+                const idInterno = `turma_${t._originalIndex + 1}_${baseIdStr.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 
                 let professor = ''; let profReal = '';
                 if (map.teacherColumn !== 'NENHUM_RODAPE_OCULTO') {

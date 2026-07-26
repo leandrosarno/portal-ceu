@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEU CAMINHO DO MAR</title>
+    <title>Portal de Atividades | Centro Educacional</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -51,8 +51,10 @@
         .btn-icon { display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1.2rem; transition: 0.2s; }
         .btn-icon:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
 
-        .search-filter-container { max-width: 900px; margin: 2rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 1.25rem; }
-        .search-box { position: relative; display: flex; align-items: center; }
+        /* AQUI É A CONFIGURAÇÃO DO NOVO CONTAINER COM DUAS COLUNAS! */
+        .search-filter-container { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: 1.5rem; width: 100%;}
+        
+        .search-box { position: relative; display: flex; align-items: center; width: 100%;}
         .search-box i { position: absolute; left: 1rem; color: var(--text-muted); font-size: 1.2rem; }
         #search-input { width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }
         #search-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
@@ -61,15 +63,16 @@
         .filter-pill { padding: 0.4rem 0.95rem; border-radius: 99px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
         .filter-pill.active { background: var(--accent-gradient); color: white; border-color: transparent; }
 
-        .results-bar { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;}
-        .sort-select { padding: 0.5rem; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .results-bar { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); width: 100%;}
+        .sort-select { padding: 0.6rem; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); font-weight: 600; width: 100%; max-width: 250px;}
 
         .activities-grid { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; width: 100%;}
-        .activity-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; transition: transform 0.2s; }
+        .activity-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .activity-card:hover { transform: translateY(-5px); background: var(--bg-card-hover); border-color: var(--border-highlight); }
         .activity-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-gradient); }
         .activity-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;}
-        .activity-category { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(99, 102, 241, 0.15); color: #818cf8; text-transform: uppercase; font-weight: bold; }
+        
+        .activity-category { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
         
         .detail-badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 99px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; transition: 0.2s; cursor: default; }
         .detail-badge i { color: var(--accent-primary); font-size: 1.15rem; }
@@ -90,6 +93,12 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .loading { animation: spin 1s linear infinite; display: inline-block;}
+        
+        @media (max-width: 768px) {
+            .search-filter-container { flex-direction: column; }
+            .coluna-imagem { display: none !important; } /* Esconde imagem no celular para ganhar espaço */
+            .coluna-direita { width: 100% !important; }
+        }
     </style>
 </head>
 <body>
@@ -100,41 +109,62 @@
             <div class="nav-brand">
                 <div class="brand-icon" id="brand-logo"><i class="ri-graduation-cap-fill"></i></div>
                 <div class="brand-text">
-                    <span class="brand-title" id="brand-title"> </span>
-                    <span class="brand-subtitle" id="brand-sub"> </span>
+                    <span class="brand-title" id="brand-title">Centro Educacional</span>
+                    <span class="brand-subtitle" id="brand-sub">Portal de Atividades</span>
                 </div>
             </div>
-            <button class="btn-icon" onclick="toggleTheme()"><i class="ri-sun-line" id="theme-icon"></i></button>
+            <!-- Ícone da LUA por padrão (já que o tema agora é Claro) -->
+            <button class="btn-icon" onclick="toggleTheme()"><i class="ri-moon-line" id="theme-icon"></i></button>
         </div>
     </nav>
 
+    <!-- O NOVO CABEÇALHO DIVIDIDO EM DUAS COLUNAS -->
     <div class="search-filter-container">
-        <div class="search-box">
-            <i class="ri-search-2-line"></i>
-            <input type="text" id="search-input" placeholder="Buscar por modalidade, professor, local..." oninput="filtrarCards()">
+        <!-- Coluna Esquerda: A Sua Imagem! -->
+        <div class="coluna-imagem" style="flex: 1; min-width: 250px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            
+            <!-- 👉 LEANDRO, COLOQUE A URL DA SUA IMAGEM ENTRE AS ASPAS ABAIXO: -->
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
+            
         </div>
-        <div class="filter-pills">
-            <button class="filter-pill active" onclick="setDia('Todos', this)">Todos</button>
-            <button class="filter-pill" onclick="setDia('Segunda', this)">Segunda</button>
-            <button class="filter-pill" onclick="setDia('Terça', this)">Terça</button>
-            <button class="filter-pill" onclick="setDia('Quarta', this)">Quarta</button>
-            <button class="filter-pill" onclick="setDia('Quinta', this)">Quinta</button>
-            <button class="filter-pill" onclick="setDia('Sexta', this)">Sexta</button>
-            <button class="filter-pill" onclick="setDia('Sábado', this)">Sábado</button>
+
+        <!-- Coluna Direita: O Campo de Busca e o Combo Box! -->
+        <div class="coluna-direita" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; justify-content: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            
+            <!-- COMBO BOX SUBIU PRA CIMA DO CAMPO DE BUSCA! -->
+            <div style="display: flex; justify-content: flex-end;">
+                <select id="sort-select" class="sort-select" onchange="filtrarCards()">
+                    <option value="padrao">Ordenar por: Padrão do Sistema</option>
+                    <option value="az">Ordenar por: Título (A-Z)</option>
+                    <option value="prof">Ordenar por: Professor (A-Z)</option>
+                </select>
+            </div>
+
+            <div class="search-box">
+                <i class="ri-search-2-line"></i>
+                <input type="text" id="search-input" placeholder="Buscar por modalidade, professor, local..." oninput="filtrarCards()">
+            </div>
+            
+            <div class="filter-pills">
+                <button class="filter-pill active" onclick="setDia('Todos', this)">Todos</button>
+                <button class="filter-pill" onclick="setDia('Segunda', this)">Segunda</button>
+                <button class="filter-pill" onclick="setDia('Terça', this)">Terça</button>
+                <button class="filter-pill" onclick="setDia('Quarta', this)">Quarta</button>
+                <button class="filter-pill" onclick="setDia('Quinta', this)">Quinta</button>
+                <button class="filter-pill" onclick="setDia('Sexta', this)">Sexta</button>
+                <button class="filter-pill" onclick="setDia('Sábado', this)">Sábado</button>
+            </div>
         </div>
     </div>
 
-    <div class="results-bar">
+    <!-- O Resumo abaixo da barra -->
+    <div class="results-bar" style="border: none;">
         <div style="color: var(--text-secondary); font-weight: 600;" id="contador"><i class="ri-loader-4-line loading"></i> Lendo Banco de Dados...</div>
-        <select id="sort-select" class="sort-select" onchange="filtrarCards()">
-            <option value="padrao">Ordenação Padrão</option>
-            <option value="az">Por Título (A-Z)</option>
-            <option value="prof">Por Professor (A-Z)</option>
-        </select>
     </div>
 
     <main class="activities-grid" id="grid"></main>
 
+    <!-- MODAL DE INTENÇÃO DE VAGAS -->
     <div class="modal" id="modal-fila">
         <div class="modal-box">
             <button class="modal-close" onclick="fecharModal()"><i class="ri-close-line"></i></button>
@@ -191,6 +221,18 @@
             return match && match[1] ? `https://lh3.googleusercontent.com/d/${match[1]}` : url.trim();
         }
 
+        // ⭐ MÁGICA DAS CORES INTELIGENTES PARA NÚCLEOS
+        function getCategoryColor(cat) {
+            const str = cat.toLowerCase();
+            if (/esporte|movimento|físic|ginástica|futebol|natação|luta/.test(str)) return { bg: 'rgba(16, 185, 129, 0.15)', text: '#10b981' }; 
+            if (/cultura|arte|música|teatro|dança/.test(str)) return { bg: 'rgba(245, 158, 11, 0.15)', text: '#f59e0b' }; 
+            if (/educação|pedagógic|ensino|aula|reforço/.test(str)) return { bg: 'rgba(59, 130, 246, 0.15)', text: '#3b82f6' }; 
+            if (/tecnologia|maker|informática|robótica/.test(str)) return { bg: 'rgba(6, 182, 212, 0.15)', text: '#06b6d4' }; 
+            if (/idioma|língua|inglês|espanhol/.test(str)) return { bg: 'rgba(236, 72, 153, 0.15)', text: '#ec4899' }; 
+            if (/saúde|bem-estar|psicologia/.test(str)) return { bg: 'rgba(239, 68, 68, 0.15)', text: '#ef4444' }; 
+            return { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8' }; 
+        }
+
         async function buscarDadosDoGoogle() {
             try {
                 const response = await fetch(API_URL + '?action=getPublicData');
@@ -236,7 +278,6 @@
             const sort = document.getElementById('sort-select').value;
             const map = setupGlobal.columnMapping || {};
             
-            // FUNÇÃO UNIFICADA DE LEITURA DAS COLUNAS
             const keys = Object.keys(turmasGlobais[0] || {}).filter(k => k !== '_originalIndex');
             const getColValue = (t, mappedCol, targetIdx, regex) => {
                 if (mappedCol && mappedCol !== 'NENHUM_RODAPE_OCULTO' && t[mappedCol] !== undefined && String(t[mappedCol]).trim() !== '') return String(t[mappedCol]).trim();
@@ -253,10 +294,22 @@
 
                 const values = Object.values(t).join(' ').toLowerCase();
                 const matchBusca = busca === '' || values.includes(busca);
+                
+                // ⭐ MÁGICA DO FILTRO DOS DIAS (CORRIGIDO PARA QUARTA X QUADRA)
                 let matchDia = true;
                 if (diaAtivo !== 'Todos') {
-                    const valDias = (t['DIAS'] || t['Dias'] || t['Dia'] || values).toLowerCase();
-                    matchDia = valDias.includes(diaAtivo.toLowerCase()) || valDias.includes(diaAtivo.substring(0,3).toLowerCase());
+                    const colDia = keys.find(k => /dia|semana|quando/i.test(k));
+                    const valDias = (colDia && t[colDia] ? String(t[colDia]) : values).toLowerCase();
+                    const diaLower = diaAtivo.toLowerCase();
+
+                    // O \b garante que ele procure apenas a palavra exata "qua" e não palavras que começam com qua, como "quadra"!
+                    if (diaLower === 'segunda') matchDia = /segunda|seg\b|2ª|2a/i.test(valDias);
+                    else if (diaLower === 'terça') matchDia = /terça|terca|ter\b|3ª|3a/i.test(valDias);
+                    else if (diaLower === 'quarta') matchDia = /quarta|qua\b|4ª|4a/i.test(valDias);
+                    else if (diaLower === 'quinta') matchDia = /quinta|qui\b|5ª|5a/i.test(valDias);
+                    else if (diaLower === 'sexta') matchDia = /sexta|sex\b|6ª|6a/i.test(valDias);
+                    else if (diaLower === 'sábado') matchDia = /sábado|sabado|sab\b|sáb/i.test(valDias);
+                    else if (diaLower === 'domingo') matchDia = /domingo|dom\b/i.test(valDias);
                 }
                 return matchBusca && matchDia;
             });
@@ -282,7 +335,7 @@
         function desenharTela(turmas) {
             const grid = document.getElementById('grid');
             document.getElementById('contador').innerText = `Exibindo ${turmas.length} turma(s)`;
-            if (turmas.length === 0) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">Nenhuma turma encontrada.</div>'; return; }
+            if (turmas.length === 0) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">Nenhuma turma encontrada com esses filtros.</div>'; return; }
 
             const map = setupGlobal.columnMapping || {};
             const layout = map.columnLayoutMap || {};
@@ -311,7 +364,6 @@
                     else { const pKey = keys.find(k => /prof|educador/i.test(k)) || keys[5]; if(pKey) { professor = t[pKey]; profReal = pKey; } }
                 }
 
-                // Identifica a coluna que está atuando como Titulo para ocultá-la dos detalhes
                 const tituloRealDaColuna = map.titleColumn || keys.find(k => /turma|atividade|curso/i.test(k)) || keys[0];
 
                 let linhas = {};
@@ -347,9 +399,12 @@
                     ? `<button class="enroll-btn btn-closed" onclick="abrirFila('${idInterno}', '${titulo.replace(/'/g,"\\'")}')"><i class="ri-ticket-2-line"></i> Entrar na Fila de Espera</button>`
                     : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', '${msgMatricula}', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
 
+                // APLICA AS CORES INTELIGENTES DA CATEGORIA
+                const corTag = getCategoryColor(category);
+
                 return `
                 <div class="activity-card">
-                    <span class="activity-category">${category}</span>
+                    <span class="activity-category" style="background: ${corTag.bg}; color: ${corTag.text};">${category}</span>
                     <h3 class="activity-title">${titulo}</h3>
                     ${professor ? `<div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;"><i class="ri-user-star-line"></i> ${professor}</div>` : ''}
                     <div style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 1rem 0; margin-bottom: 1rem;">${detalhesHtml}</div>

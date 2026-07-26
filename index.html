@@ -119,7 +119,9 @@
         </div>
     </nav>
 
+    <!-- O CABEÇALHO DIVIDIDO EM DUAS COLUNAS -->
     <div class="search-filter-container">
+        
         <!-- Coluna Esquerda: A Imagem -->
         <div class="coluna-imagem" style="flex: 1; min-width: 250px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <img src="https://..." style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
@@ -159,6 +161,7 @@
 
     <main class="activities-grid" id="grid"></main>
 
+    <!-- MODAL DE INTENÇÃO DE VAGAS -->
     <div class="modal" id="modal-fila">
         <div class="modal-box">
             <button class="modal-close" onclick="fecharModal()"><i class="ri-close-line"></i></button>
@@ -228,17 +231,16 @@
 
         async function buscarDadosDoGoogle() {
             try {
-                // ⭐ DESTRUIDOR DE CACHE NIVEL MILITAR! Garante que sempre vai buscar o status exato!
+                // ⭐ DESTRUIDOR DE CACHE SEGURO: Apenas o parâmetro na URL já resolve sem bloquear no Google!
                 const antiCache = new Date().getTime();
-                const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache, {
-                    method: 'GET', headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }, cache: 'no-store'
-                });
+                const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache);
                 const data = await response.json();
                 
                 if (data.sucesso) processarDados(data.turmas, data.configuracoes);
                 else Swal.fire('Erro', data.erro, 'error');
             } catch (err) {
-                document.getElementById('contador').innerText = "Erro de Conexão.";
+                document.getElementById('contador').innerText = "Erro de Conexão. Ocorreu uma falha no sistema.";
+                console.error(err);
             }
         }
 
@@ -387,7 +389,6 @@
                     detalhesHtml += `</div>`;
                 });
 
-                // ⭐ A DECISÃO SOBERANA DO STATUS (FANTASMA DA PLANILHA EXORCIZADO)
                 let isFila = false;
                 if (setupGlobal.enrollmentClosedIdsArray && setupGlobal.enrollmentClosedIdsArray.includes(idInterno)) {
                     isFila = true; // Admin mandou fechar.

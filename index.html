@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEU CAMINHO DO MAR</title>
-    <meta name="description" content="Acompanhe as turmas, horários e vagas do nosso Equipamento.">
+    <title>Portal de Atividades | Centro Educacional</title>
+    <meta name="description" content="Acompanhe as turmas, horários e vagas do nosso Centro Educacional.">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -12,9 +12,8 @@
 
     <script>
         // =========================================================================
-        // 🔗 PONTE DE CONEXÃO COM O COFRE (GOOGLE APPS SCRIPT)
+        // 🔗 PONTE DE CONEXÃO COM A API DO GOOGLE APPS SCRIPT
         // =========================================================================
-        // COLE AQUI A URL DO SEU APP DA WEB DO GOOGLE (QUE TERMINA EM /exec)
         const API_URL = 'https://script.google.com/macros/s/AKfycbwib78hd41QOPPOXt4CHtGbqiEcF4ICDqAfXsMzSg8gRVyJ1vnA74vBkPjgioBz1bDn/exec';
     </script>
 
@@ -40,13 +39,11 @@
         button { cursor: pointer; }
         .hidden { display: none !important; }
 
-        /* Fundo Animado */
         .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
         .glow-orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; transition: all 1s ease; }
         .orb-1 { top: -10%; left: 15%; width: 50vw; height: 50vw; background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%); }
         .orb-2 { bottom: -15%; right: -10%; width: 45vw; height: 45vw; background: radial-gradient(circle, #3b82f6 0%, transparent 70%); }
 
-        /* Navegação */
         .navbar { position: sticky; top: 0; z-index: 50; background: var(--bg-glass); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); }
         .nav-container { max-width: 1280px; margin: 0 auto; padding: 0.85rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
         .nav-brand { display: flex; align-items: center; gap: 0.75rem; }
@@ -56,11 +53,11 @@
         .btn-icon { display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1.2rem; transition: all 0.2s; }
         .btn-icon:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
 
-        /* Filtros e Busca */
         .search-filter-container { max-width: 900px; margin: 2rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm); backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 1.25rem; }
         .search-box { position: relative; display: flex; align-items: center; }
         .search-box i { position: absolute; left: 1rem; color: var(--text-muted); font-size: 1.2rem; }
-        #search-input { width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }
+        #search-input { width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; transition: all 0.2s; }
+        #search-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
         
         .filter-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
         .filter-pill { padding: 0.4rem 0.95rem; border-radius: 99px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
@@ -69,7 +66,6 @@
         .results-bar { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;}
         .sort-select { padding: 0.5rem; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); }
 
-        /* Grid e Cartões */
         .activities-grid { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; width: 100%;}
         .activity-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; transition: transform 0.2s; }
         .activity-card:hover { transform: translateY(-5px); background: var(--bg-card-hover); border-color: var(--border-highlight); }
@@ -77,17 +73,12 @@
         .activity-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;}
         .activity-category { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(99, 102, 241, 0.15); color: #818cf8; text-transform: uppercase; font-weight: bold; }
         
-        .detail-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;}
-        .detail-row i { color: var(--accent-primary); }
-        .detail-value { font-weight: 600; color: var(--text-primary); }
-        
         .enroll-btn { width: 100%; padding: 0.75rem; border-radius: var(--radius-md); font-weight: bold; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 0.5rem;}
         .btn-open { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; }
         .btn-open:hover { background: #10b981; color: white; }
         .btn-closed { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
         .btn-closed:hover { background: #f59e0b; color: white; }
 
-        /* Modal Fila de Espera */
         .modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal.active { display: flex; }
         .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; width: 100%; max-width: 450px; position: relative; }
@@ -100,7 +91,6 @@
     </style>
 </head>
 <body>
-
     <div class="bg-mesh">
         <div class="glow-orb orb-1"></div>
         <div class="glow-orb orb-2"></div>
@@ -111,7 +101,7 @@
             <div class="nav-brand">
                 <div class="brand-icon" id="brand-logo"><i class="ri-graduation-cap-fill"></i></div>
                 <div class="brand-text">
-                    <span class="brand-title" id="brand-title">CEU CAMINHO DO MAR</span>
+                    <span class="brand-title" id="brand-title">Centro Educacional</span>
                     <span class="brand-subtitle" id="brand-sub">Portal de Atividades</span>
                 </div>
             </div>
@@ -137,17 +127,17 @@
     </div>
 
     <div class="results-bar">
-        <div style="color: var(--text-secondary); font-weight: 600;" id="contador"><i class="ri-loader-4-line loading"></i> Conectando ao Servidor...</div>
+        <div style="color: var(--text-secondary); font-weight: 600;" id="contador"><i class="ri-loader-4-line loading"></i> Lendo Banco de Dados...</div>
         <select id="sort-select" class="sort-select" onchange="filtrarCards()">
             <option value="padrao">Ordenação Padrão</option>
             <option value="az">Por Modalidade (A-Z)</option>
             <option value="prof">Por Professor (A-Z)</option>
-            <option value="vagas">Vagas Abertas Primeiro</option>
         </select>
     </div>
 
     <main class="activities-grid" id="grid">
-        </main>
+        <!-- Cartões gerados via JS -->
+    </main>
 
     <div class="modal" id="modal-fila">
         <div class="modal-box">
@@ -168,7 +158,7 @@
 
     <script>
         let turmasGlobais = [];
-        let configGlobal = [];
+        let setupGlobal = {}; // A Mente do Admin!
         let diaAtivo = 'Todos';
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -189,7 +179,6 @@
 
         async function buscarDadosDoGoogle() {
             try {
-                // A requisição GET que fura bloqueios e pega os dados da API em formato JSON
                 const response = await fetch(API_URL + '?action=getPublicData');
                 const data = await response.json();
                 
@@ -199,7 +188,7 @@
                     Swal.fire('Erro na Base', data.erro, 'error');
                 }
             } catch (err) {
-                document.getElementById('contador').innerText = "Erro de Conexão. O WebApp está publicado para Qualquer Pessoa?";
+                document.getElementById('contador').innerText = "Erro de Conexão com o Google Script.";
                 console.error(err);
             }
         }
@@ -210,16 +199,13 @@
                 return;
             }
             
-            // Lemos a Linha 1 da aba Configurações que o Admin gravou
+            // LER A MENTE DO ADMIN (Tudo que ele salvou na aba CONFIGURACOES da planilha)
             if(configLinha1 && configLinha1.length > 1) {
                 try {
-                    const setup = JSON.parse(configLinha1[1] || '{}'); // Coluna B
-                    if(setup.centerName) document.getElementById('brand-title').innerText = setup.centerName;
-                    if(setup.centerSubtitle) document.getElementById('brand-sub').innerText = setup.centerSubtitle;
-                    if(setup.logoUrl) document.getElementById('brand-logo').innerHTML = `<img src="${setup.logoUrl}" style="width:100%;height:100%;object-fit:cover;">`;
-                    
-                    // Aqui aplicaríamos a regra das colunas ocultas e de layout!
-                    // (Lógica completa de colunas ocultas será no próximo nível com o Admin!)
+                    setupGlobal = JSON.parse(configLinha1[1] || '{}'); // Coluna B1
+                    if(setupGlobal.centerName) document.getElementById('brand-title').innerText = setupGlobal.centerName;
+                    if(setupGlobal.centerSubtitle) document.getElementById('brand-sub').innerText = setupGlobal.centerSubtitle;
+                    if(setupGlobal.logoUrl) document.getElementById('brand-logo').innerHTML = `<img src="${setupGlobal.logoUrl}" style="width:100%;height:100%;object-fit:cover;">`;
                 } catch(e){}
             }
 
@@ -244,40 +230,42 @@
         function filtrarCards() {
             const busca = document.getElementById('search-input').value.toLowerCase();
             const sort = document.getElementById('sort-select').value;
+            const map = setupGlobal.columnMapping || {};
             
             let filtradas = turmasGlobais.filter(t => {
+                const keys = Object.keys(t).filter(k => k !== '_originalIndex');
+                const tituloBase = (map.titleColumn && t[map.titleColumn]) ? t[map.titleColumn] : (t[keys[0]] || `Atividade ${t._originalIndex + 1}`);
+                const idInterno = `turma_${t._originalIndex + 1}_${tituloBase.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                
+                // 1. FILTRO MÁGICO: Se o Admin ocultou essa turma, joga ela fora do site!
+                if (setupGlobal.hiddenIdsArray && setupGlobal.hiddenIdsArray.includes(idInterno)) {
+                    return false;
+                }
+
                 const values = Object.values(t).join(' ').toLowerCase();
                 const matchBusca = busca === '' || values.includes(busca);
                 
                 let matchDia = true;
                 if (diaAtivo !== 'Todos') {
-                    // Tenta achar o dia nas colunas prováveis
                     const valDias = (t['DIAS'] || t['Dias'] || t['Dia'] || values).toLowerCase();
                     matchDia = valDias.includes(diaAtivo.toLowerCase()) || valDias.includes(diaAtivo.substring(0,3).toLowerCase());
                 }
                 return matchBusca && matchDia;
             });
 
-            // Ordenação
-            if(sort === 'az') filtradas.sort((a,b) => String(Object.values(a)[0]).localeCompare(String(Object.values(b)[0])));
+            if(sort === 'az') filtradas.sort((a,b) => String(Object.values(a)[1]).localeCompare(String(Object.values(b)[1])));
             if(sort === 'prof') filtradas.sort((a,b) => String(a['PROFESSOR'] || a['Educador'] || '').localeCompare(String(b['PROFESSOR'] || b['Educador'] || '')));
-            if(sort === 'vagas') {
-                filtradas.sort((a,b) => {
-                    const statusA = /esgotad|lotad|fila/i.test(String(a['VAGAS']||a['Status']||''));
-                    const statusB = /esgotad|lotad|fila/i.test(String(b['VAGAS']||b['Status']||''));
-                    return (statusA === statusB) ? 0 : statusA ? 1 : -1;
-                });
-            }
 
             desenharTela(filtradas);
         }
 
         function getIcone(texto) {
             const lower = texto.toLowerCase();
-            if(/hora|das|às/i.test(lower)) return 'ri-time-line';
-            if(/dia/i.test(lower)) return 'ri-calendar-event-line';
-            if(/sala|local/i.test(lower)) return 'ri-map-pin-line';
+            if(/hora|das|às|turno/i.test(lower)) return 'ri-time-line';
+            if(/dia|semana/i.test(lower)) return 'ri-calendar-event-line';
+            if(/sala|local|quadra/i.test(lower)) return 'ri-map-pin-line';
             if(/prof/i.test(lower)) return 'ri-user-star-line';
+            if(/idade|público|alvo/i.test(lower)) return 'ri-group-line';
             return 'ri-arrow-drop-right-line';
         }
 
@@ -286,43 +274,79 @@
             document.getElementById('contador').innerText = `Exibindo ${turmas.length} turma(s)`;
             
             if (turmas.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">Nenhuma turma encontrada.</div>';
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">Nenhuma turma encontrada com esses filtros.</div>';
                 return;
             }
 
+            const map = setupGlobal.columnMapping || {};
+            const layout = map.columnLayoutMap || {};
+            const visibleCols = map.visibleDetailsMap || {};
+            const hasCustomMap = Object.keys(visibleCols).length > 0;
+
             grid.innerHTML = turmas.map(t => {
                 const keys = Object.keys(t).filter(k => k !== '_originalIndex');
-                const titulo = t[keys[0]] || 'Turma sem nome';
-                const professor = t['PROFESSOR'] || t['Educador'] || t[keys[5]] || '';
-                const vagasTxt = String(t['VAGAS'] || t['Status'] || t[keys[6]] || '');
-                const vagasEsgotadas = /esgotad|lotad|lista de espera|fila/i.test(vagasTxt);
+                
+                const titulo = (map.titleColumn && t[map.titleColumn]) ? t[map.titleColumn] : (t[keys[0]] || `Atividade ${t._originalIndex + 1}`);
+                const category = (map.categoryColumn && t[map.categoryColumn]) ? t[map.categoryColumn] : (t['NÚCLEO'] || t['Categoria'] || 'Geral');
+                const idInterno = `turma_${t._originalIndex + 1}_${titulo.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                
+                let professor = '';
+                if (map.teacherColumn !== 'NENHUM_RODAPE_OCULTO') {
+                    if (map.teacherColumn && t[map.teacherColumn]) { professor = t[map.teacherColumn]; } 
+                    else { const pKey = keys.find(k => /prof|educador/i.test(k)) || keys[5]; if(pKey) professor = t[pKey]; }
+                }
 
-                // Monta as linhas dinâmicas de detalhes (pegando colunas específicas)
-                let detalhesHtml = '';
+                // A LÓGICA DE LINHAS DO ADMIN APLICADA!
+                let linhas = {};
                 keys.forEach((colName, i) => {
-                    // Pula colunas que já usamos em destaque ou ID
-                    if(colName === keys[0] || colName.toUpperCase() === 'PROFESSOR' || /vaga|status/i.test(colName) || /ID/i.test(colName)) return;
-                    if(t[colName].trim() !== '') {
-                        detalhesHtml += `
-                        <div class="detail-row">
-                            <i class="${getIcone(colName)}"></i> 
-                            <span class="detail-label">${colName}:</span>
-                            <span class="detail-value">${t[colName]}</span>
-                        </div>`;
+                    if(colName === keys[0] || colName === map.titleColumn || colName === map.teacherColumn || colName === map.categoryColumn) return;
+                    
+                    let isVisible = false;
+                    if (hasCustomMap) { isVisible = visibleCols[colName]; } 
+                    else { if(/horário|hora|dia|semana|sala|local/i.test(colName)) isVisible = true; }
+
+                    if(isVisible && t[colName] && t[colName].trim() !== '') {
+                        let numLinha = layout[colName] || (i + 1);
+                        if(!linhas[numLinha]) linhas[numLinha] = [];
+                        linhas[numLinha].push({ nome: colName, valor: t[colName], icone: getIcone(colName) });
                     }
                 });
 
-                const idInterno = t['CÓDIGO EOL'] || t['ID'] || titulo;
+                let sortedLineNumbers = Object.keys(linhas).map(Number).sort((a,b)=>a-b);
+                let detalhesHtml = '';
+                sortedLineNumbers.forEach(num => {
+                    let itens = linhas[num];
+                    // Coloca as colunas que têm a mesma linha lado a lado!
+                    detalhesHtml += `<div style="display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 0.65rem;">`;
+                    itens.forEach(item => {
+                        detalhesHtml += `
+                        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="${item.icone}" style="color: var(--accent-primary); font-size: 1.1rem;"></i> 
+                            <span style="font-weight: 500; color: var(--text-muted);">${item.nome}:</span>
+                            <span style="font-weight: 600; color: var(--text-primary);">${item.valor}</span>
+                        </div>`;
+                    });
+                    detalhesHtml += `</div>`;
+                });
 
-                const botaoAcao = vagasEsgotadas 
+                // LÓGICA DE FILA DE ESPERA (Verifica o botão do Admin ou a planilha nativa)
+                let isFila = false;
+                if (setupGlobal.enrollmentClosedIdsArray && setupGlobal.enrollmentClosedIdsArray.includes(idInterno)) {
+                    isFila = true;
+                } else {
+                    const vagasTxt = String(t['VAGAS'] || t['Status'] || t[keys[6]] || '');
+                    if (/esgotad|lotad|lista de espera|fila/i.test(vagasTxt)) isFila = true;
+                }
+
+                const botaoAcao = isFila 
                     ? `<button class="enroll-btn btn-closed" onclick="abrirFila('${idInterno}', '${titulo}')"><i class="ri-ticket-2-line"></i> Entrar na Fila de Espera</button>`
-                    : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', 'Compareça à secretaria com seus documentos para realizar a matrícula.', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
+                    : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', 'Compareça à secretaria com seus documentos.', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
 
                 return `
                 <div class="activity-card">
-                    <span class="activity-category">${t['NÚCLEO'] || t['Categoria'] || 'Geral'}</span>
+                    <span class="activity-category">${category}</span>
                     <h3 class="activity-title">${titulo}</h3>
-                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;"><i class="ri-user-star-line"></i> ${professor}</div>
+                    ${professor ? `<div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;"><i class="ri-user-star-line"></i> ${professor}</div>` : ''}
                     
                     <div style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 1rem 0; margin-bottom: 1rem;">
                         ${detalhesHtml}
@@ -361,36 +385,18 @@
             btn.innerHTML = '<i class="ri-loader-4-line loading"></i> Gerando Ticket...';
             btn.disabled = true;
 
-            const payload = {
-                action: 'entrarFilaEspera',
-                idTurma: document.getElementById('fila-id-turma').value,
-                modalidade: turma,
-                nomeAluno: nome,
-                telefone: telefone,
-                email: email
-            };
+            const payload = { action: 'entrarFilaEspera', idTurma: document.getElementById('fila-id-turma').value, modalidade: turma, nomeAluno: nome, telefone: telefone, email: email };
 
             try {
-                // Requisição POST segura via fetch API
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const data = await res.json();
                 
                 if(data.sucesso) {
-                    Swal.fire({
-                        title: 'Ticket Gerado!',
-                        html: `Sua posição na fila de espera foi registrada.<br><br><b style="font-size:2rem; color:#6366f1;">${data.ticket}</b><br><br>Guarde este número de protocolo.`,
-                        icon: 'success'
-                    }).then(() => { fecharModal(); });
-                } else {
-                    Swal.fire('Erro', data.erro, 'error');
-                }
+                    Swal.fire({ title: 'Ticket Gerado!', html: `Sua posição na fila foi registrada.<br><br><b style="font-size:2rem; color:#6366f1;">${data.ticket}</b><br><br>Guarde este número.`, icon: 'success' })
+                    .then(() => fecharModal());
+                } else Swal.fire('Erro', data.erro, 'error');
             } catch (err) {
                 Swal.fire('Erro', 'Falha ao comunicar com a secretaria.', 'error');
-                console.error(err);
             } finally {
                 btn.innerHTML = 'Entrar na Fila de Espera';
                 btn.disabled = false;

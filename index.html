@@ -119,14 +119,14 @@
     <!-- O CABEÇALHO DIVIDIDO EM DUAS COLUNAS -->
     <div class="search-filter-container">
         
-        <!-- Coluna Esquerda: A Imagem (Agora puxa automático do Admin!) -->
-        <div class="coluna-imagem" style="flex: 1; min-width: 200px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <!-- Coluna Esquerda: A Imagem -->
+        <div class="coluna-imagem" style="flex: 1; min-width: 250px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <img src="https://..." style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
         </div>
 
         <!-- Coluna Direita: Buscas e Filtros -->
-        <div class="coluna-direita" style="flex: 2; min-width: 200px; display: flex; flex-direction: column; justify-content: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <span align: center><H1> Portal de atividades e lista de espera </H1></span>
+        <div class="coluna-direita" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; justify-content: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            
             <div style="display: flex; justify-content: flex-end;">
                 <select id="sort-select" class="sort-select" onchange="filtrarCards()">
                     <option value="padrao">Ordenar por: Padrão do Sistema</option>
@@ -229,8 +229,11 @@
 
         async function buscarDadosDoGoogle() {
             try {
-                const response = await fetch(API_URL + '?action=getPublicData');
+                // ⭐ DESTRUIDOR DE CACHE: Garante que ele vai puxar sua alteração do Admin NA HORA!
+                const antiCache = new Date().getTime();
+                const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache);
                 const data = await response.json();
+                
                 if (data.sucesso) processarDados(data.turmas, data.configuracoes);
                 else Swal.fire('Erro', data.erro, 'error');
             } catch (err) {
@@ -250,7 +253,6 @@
                         const logo = convertGoogleDriveUrl(setupGlobal.logoUrl);
                         document.getElementById('brand-logo').innerHTML = `<img src="${logo}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
-                    // AGORA PUXA A FOTO DE DESTAQUE DO ADMIN!
                     if(setupGlobal.featuredImage) {
                         const featImg = convertGoogleDriveUrl(setupGlobal.featuredImage);
                         document.getElementById('img-destaque').src = featImg;
@@ -294,14 +296,12 @@
                 const values = Object.values(t).join(' ').toLowerCase();
                 const matchBusca = busca === '' || values.includes(busca);
                 
-                // ⭐ MÁGICA DO FILTRO DA QUARTA-FEIRA (AGORA CORRIGIDO CONTRA "QUADRA")
                 let matchDia = true;
                 if (diaAtivo !== 'Todos') {
                     const colDia = keys.find(k => /dia|semana|quando/i.test(k));
                     const valDias = (colDia && t[colDia] ? String(t[colDia]) : values).toLowerCase();
                     const diaLower = diaAtivo.toLowerCase();
 
-                    // O \b garante que a busca seja apenas pela palavra inteira ou abreviação exata!
                     if (diaLower === 'segunda') matchDia = /segunda|seg\b|2ª|2a/i.test(valDias);
                     else if (diaLower === 'terça') matchDia = /terça|terca|ter\b|3ª|3a/i.test(valDias);
                     else if (diaLower === 'quarta') matchDia = /quarta|qua\b|4ª|4a/i.test(valDias);
@@ -386,10 +386,14 @@
                     detalhesHtml += `</div>`;
                 });
 
+                // ⭐ A CORREÇÃO FINAL: Força a abertura se o Admin mandou!
                 let isFila = false;
                 if (setupGlobal.enrollmentClosedIdsArray && setupGlobal.enrollmentClosedIdsArray.includes(idInterno)) {
-                    isFila = true;
+                    isFila = true; // O Admin mandou fechar!
+                } else if (setupGlobal.enrollmentOpenIdsArray && setupGlobal.enrollmentOpenIdsArray.includes(idInterno)) {
+                    isFila = false; // O Admin mandou abrir! (Ignora a planilha nativa)
                 } else {
+                    // Se o Admin nunca tocou no botão, olha a planilha nativa!
                     const vagasTxt = String(t['VAGAS'] || t['Status'] || t[keys[6]] || '');
                     if (/esgotad|lotad|lista|fila/i.test(vagasTxt)) isFila = true;
                 }
@@ -398,7 +402,6 @@
                     ? `<button class="enroll-btn btn-closed" onclick="abrirFila('${idInterno}', '${titulo.replace(/'/g,"\\'")}')"><i class="ri-ticket-2-line"></i> Entrar na Fila de Espera</button>`
                     : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', '${msgMatricula}', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
 
-                // APLICA AS CORES INTELIGENTES DA CATEGORIA!
                 const corTag = getCategoryColor(category);
 
                 return `

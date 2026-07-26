@@ -51,7 +51,6 @@
         .btn-icon { display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1.2rem; transition: 0.2s; }
         .btn-icon:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
 
-        /* AQUI É A CONFIGURAÇÃO DO NOVO CONTAINER COM DUAS COLUNAS! */
         .search-filter-container { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: 1.5rem; width: 100%;}
         
         .search-box { position: relative; display: flex; align-items: center; width: 100%;}
@@ -96,7 +95,7 @@
         
         @media (max-width: 768px) {
             .search-filter-container { flex-direction: column; }
-            .coluna-imagem { display: none !important; } /* Esconde imagem no celular para ganhar espaço */
+            .coluna-imagem { display: none !important; } 
             .coluna-direita { width: 100% !important; }
         }
     </style>
@@ -113,25 +112,21 @@
                     <span class="brand-subtitle" id="brand-sub">Portal de Atividades</span>
                 </div>
             </div>
-            <!-- Ícone da LUA por padrão (já que o tema agora é Claro) -->
             <button class="btn-icon" onclick="toggleTheme()"><i class="ri-moon-line" id="theme-icon"></i></button>
         </div>
     </nav>
 
-    <!-- O NOVO CABEÇALHO DIVIDIDO EM DUAS COLUNAS -->
+    <!-- O CABEÇALHO DIVIDIDO EM DUAS COLUNAS -->
     <div class="search-filter-container">
-        <!-- Coluna Esquerda: A Sua Imagem! -->
+        
+        <!-- Coluna Esquerda: A Imagem (Agora puxa automático do Admin!) -->
         <div class="coluna-imagem" style="flex: 1; min-width: 250px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            
-            <!-- 👉 LEANDRO, COLOQUE A URL DA SUA IMAGEM ENTRE AS ASPAS ABAIXO: -->
             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
-            
         </div>
 
-        <!-- Coluna Direita: O Campo de Busca e o Combo Box! -->
+        <!-- Coluna Direita: Buscas e Filtros -->
         <div class="coluna-direita" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; justify-content: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             
-            <!-- COMBO BOX SUBIU PRA CIMA DO CAMPO DE BUSCA! -->
             <div style="display: flex; justify-content: flex-end;">
                 <select id="sort-select" class="sort-select" onchange="filtrarCards()">
                     <option value="padrao">Ordenar por: Padrão do Sistema</option>
@@ -157,7 +152,6 @@
         </div>
     </div>
 
-    <!-- O Resumo abaixo da barra -->
     <div class="results-bar" style="border: none;">
         <div style="color: var(--text-secondary); font-weight: 600;" id="contador"><i class="ri-loader-4-line loading"></i> Lendo Banco de Dados...</div>
     </div>
@@ -221,7 +215,7 @@
             return match && match[1] ? `https://lh3.googleusercontent.com/d/${match[1]}` : url.trim();
         }
 
-        // ⭐ MÁGICA DAS CORES INTELIGENTES PARA NÚCLEOS
+        // ⭐ MÁGICA DAS CORES INTELIGENTES
         function getCategoryColor(cat) {
             const str = cat.toLowerCase();
             if (/esporte|movimento|físic|ginástica|futebol|natação|luta/.test(str)) return { bg: 'rgba(16, 185, 129, 0.15)', text: '#10b981' }; 
@@ -255,6 +249,11 @@
                     if(setupGlobal.logoUrl) {
                         const logo = convertGoogleDriveUrl(setupGlobal.logoUrl);
                         document.getElementById('brand-logo').innerHTML = `<img src="${logo}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    // AGORA PUXA A FOTO DE DESTAQUE DO ADMIN!
+                    if(setupGlobal.featuredImage) {
+                        const featImg = convertGoogleDriveUrl(setupGlobal.featuredImage);
+                        document.getElementById('img-destaque').src = featImg;
                     }
                 } catch(e){}
             }
@@ -295,14 +294,14 @@
                 const values = Object.values(t).join(' ').toLowerCase();
                 const matchBusca = busca === '' || values.includes(busca);
                 
-                // ⭐ MÁGICA DO FILTRO DOS DIAS (CORRIGIDO PARA QUARTA X QUADRA)
+                // ⭐ MÁGICA DO FILTRO DA QUARTA-FEIRA (AGORA CORRIGIDO CONTRA "QUADRA")
                 let matchDia = true;
                 if (diaAtivo !== 'Todos') {
                     const colDia = keys.find(k => /dia|semana|quando/i.test(k));
                     const valDias = (colDia && t[colDia] ? String(t[colDia]) : values).toLowerCase();
                     const diaLower = diaAtivo.toLowerCase();
 
-                    // O \b garante que ele procure apenas a palavra exata "qua" e não palavras que começam com qua, como "quadra"!
+                    // O \b garante que a busca seja apenas pela palavra inteira ou abreviação exata!
                     if (diaLower === 'segunda') matchDia = /segunda|seg\b|2ª|2a/i.test(valDias);
                     else if (diaLower === 'terça') matchDia = /terça|terca|ter\b|3ª|3a/i.test(valDias);
                     else if (diaLower === 'quarta') matchDia = /quarta|qua\b|4ª|4a/i.test(valDias);
@@ -399,7 +398,7 @@
                     ? `<button class="enroll-btn btn-closed" onclick="abrirFila('${idInterno}', '${titulo.replace(/'/g,"\\'")}')"><i class="ri-ticket-2-line"></i> Entrar na Fila de Espera</button>`
                     : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', '${msgMatricula}', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
 
-                // APLICA AS CORES INTELIGENTES DA CATEGORIA
+                // APLICA AS CORES INTELIGENTES DA CATEGORIA!
                 const corTag = getCategoryColor(category);
 
                 return `

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEU CAMINHO DO MAR</title>
+    <title>Portal de Atividades | Centro Educacional</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -51,7 +51,7 @@
         .btn-icon { display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1.2rem; transition: 0.2s; }
         .btn-icon:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
 
-        .search-filter-container { max-width: 900px; margin: 2rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm); backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 1.25rem; }
+        .search-filter-container { max-width: 900px; margin: 2rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 1.25rem; }
         .search-box { position: relative; display: flex; align-items: center; }
         .search-box i { position: absolute; left: 1rem; color: var(--text-muted); font-size: 1.2rem; }
         #search-input { width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }
@@ -81,7 +81,6 @@
         .btn-closed { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
         .btn-closed:hover { background: #f59e0b; color: white; }
 
-        /* MODAL OTIMIZADO PARA A FILA DE ESPERA (COM IDADE) */
         .modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal.active { display: flex; }
         .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; width: 100%; max-width: 450px; position: relative; }
@@ -101,8 +100,8 @@
             <div class="nav-brand">
                 <div class="brand-icon" id="brand-logo"><i class="ri-graduation-cap-fill"></i></div>
                 <div class="brand-text">
-                    <span class="brand-title" id="brand-title">...</span>
-                    <span class="brand-subtitle" id="brand-sub">...</span>
+                    <span class="brand-title" id="brand-title">Centro Educacional</span>
+                    <span class="brand-subtitle" id="brand-sub">Portal de Atividades</span>
                 </div>
             </div>
             <button class="btn-icon" onclick="toggleTheme()"><i class="ri-sun-line" id="theme-icon"></i></button>
@@ -136,7 +135,6 @@
 
     <main class="activities-grid" id="grid"></main>
 
-    <!-- O NOVO MODAL DE INTENÇÃO DE VAGAS -->
     <div class="modal" id="modal-fila">
         <div class="modal-box">
             <button class="modal-close" onclick="fecharModal()"><i class="ri-close-line"></i></button>
@@ -238,16 +236,23 @@
             const sort = document.getElementById('sort-select').value;
             const map = setupGlobal.columnMapping || {};
             
+            // FUNÇÃO UNIFICADA DE LEITURA DAS COLUNAS
+            const keys = Object.keys(turmasGlobais[0] || {}).filter(k => k !== '_originalIndex');
+            const getColValue = (t, mappedCol, targetIdx, regex) => {
+                if (mappedCol && mappedCol !== 'NENHUM_RODAPE_OCULTO' && t[mappedCol] !== undefined && String(t[mappedCol]).trim() !== '') return String(t[mappedCol]).trim();
+                if (targetIdx !== undefined && keys[targetIdx] && t[keys[targetIdx]] !== undefined && String(t[keys[targetIdx]]).trim() !== '') return String(t[keys[targetIdx]]).trim();
+                if (regex) { const f = keys.find(k => regex.test(k)); if (f && t[f] !== undefined && String(t[f]).trim() !== '') return String(t[f]).trim(); }
+                return '';
+            };
+
             let filtradas = turmasGlobais.filter(t => {
-                const keys = Object.keys(t).filter(k => k !== '_originalIndex');
-                const tituloBase = (map.titleColumn && t[map.titleColumn]) ? t[map.titleColumn] : (t[keys[0]] || `Atividade ${t._originalIndex + 1}`);
-                const idInterno = `turma_${t._originalIndex + 1}_${tituloBase.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                const titulo = getColValue(t, map.titleColumn, 0, /turma|atividade|curso/i) || `Atividade ${t._originalIndex + 1}`;
+                const idInterno = `turma_${t._originalIndex + 1}_${titulo.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 
                 if (setupGlobal.hiddenIdsArray && setupGlobal.hiddenIdsArray.includes(idInterno)) return false;
 
                 const values = Object.values(t).join(' ').toLowerCase();
                 const matchBusca = busca === '' || values.includes(busca);
-                
                 let matchDia = true;
                 if (diaAtivo !== 'Todos') {
                     const valDias = (t['DIAS'] || t['Dias'] || t['Dia'] || values).toLowerCase();
@@ -256,11 +261,8 @@
                 return matchBusca && matchDia;
             });
 
-            const colTitulo = map.titleColumn || Object.keys(turmasGlobais[0]||{})[1]; 
-            const colProf = map.teacherColumn || 'PROFESSOR';
-
-            if(sort === 'az') filtradas.sort((a,b) => String(a[colTitulo] || '').localeCompare(String(b[colTitulo] || '')));
-            if(sort === 'prof') filtradas.sort((a,b) => String(a[colProf] || '').localeCompare(String(b[colProf] || '')));
+            if(sort === 'az') filtradas.sort((a,b) => String(getColValue(a, map.titleColumn, 0, /turma/i)).localeCompare(String(getColValue(b, map.titleColumn, 0, /turma/i))));
+            if(sort === 'prof') filtradas.sort((a,b) => String(getColValue(a, map.teacherColumn, 5, /prof/i)).localeCompare(String(getColValue(b, map.teacherColumn, 5, /prof/i))));
 
             desenharTela(filtradas);
         }
@@ -287,14 +289,20 @@
             const visibleCols = map.visibleDetailsMap || {};
             const hasCustomMap = Object.keys(visibleCols).length > 0;
             
-            // O INSTRUÇÕES DE MATRÍCULA DO ADMIN!
             const msgMatricula = (setupGlobal.instrucoesMatricula || 'Compareça à secretaria para realizar a matrícula.').replace(/'/g, "\\'");
 
             grid.innerHTML = turmas.map(t => {
                 const keys = Object.keys(t).filter(k => k !== '_originalIndex');
-                const tituloReal = map.titleColumn || keys[0]; 
-                const titulo = t[tituloReal] || `Atividade ${t._originalIndex + 1}`;
-                const category = (map.categoryColumn && t[map.categoryColumn]) ? t[map.categoryColumn] : (t['NÚCLEO'] || t['Categoria'] || 'Geral');
+                
+                const getColValue = (mappedCol, targetIdx, regex) => {
+                    if (mappedCol && mappedCol !== 'NENHUM_RODAPE_OCULTO' && t[mappedCol] !== undefined && String(t[mappedCol]).trim() !== '') return String(t[mappedCol]).trim();
+                    if (targetIdx !== undefined && keys[targetIdx] && t[keys[targetIdx]] !== undefined && String(t[keys[targetIdx]]).trim() !== '') return String(t[keys[targetIdx]]).trim();
+                    if (regex) { const f = keys.find(k => regex.test(k)); if (f && t[f] !== undefined && String(t[f]).trim() !== '') return String(t[f]).trim(); }
+                    return '';
+                };
+
+                const titulo = getColValue(map.titleColumn, 0, /turma|atividade|curso/i) || `Atividade ${t._originalIndex + 1}`;
+                const category = getColValue(map.categoryColumn, 4, /núcleo|centro/i) || 'Geral';
                 const idInterno = `turma_${t._originalIndex + 1}_${titulo.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 
                 let professor = ''; let profReal = '';
@@ -303,9 +311,12 @@
                     else { const pKey = keys.find(k => /prof|educador/i.test(k)) || keys[5]; if(pKey) { professor = t[pKey]; profReal = pKey; } }
                 }
 
+                // Identifica a coluna que está atuando como Titulo para ocultá-la dos detalhes
+                const tituloRealDaColuna = map.titleColumn || keys.find(k => /turma|atividade|curso/i.test(k)) || keys[0];
+
                 let linhas = {};
                 keys.forEach((colName, i) => {
-                    if(colName === tituloReal || colName === map.categoryColumn || colName === profReal) return;
+                    if(colName === tituloRealDaColuna || colName === map.categoryColumn || colName === profReal) return;
                     let isVis = hasCustomMap ? visibleCols[colName] : (/horário|hora|dia|semana|sala|local/i.test(colName));
                     if(isVis && t[colName] && t[colName].trim() !== '') {
                         let nL = layout[colName] || (i + 1);

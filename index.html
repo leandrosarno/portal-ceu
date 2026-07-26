@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>CEU CAMINHO DO MAR</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -108,7 +111,7 @@
             <div class="nav-brand">
                 <div class="brand-icon" id="brand-logo"><i class="ri-graduation-cap-fill"></i></div>
                 <div class="brand-text">
-                    <span class="brand-title" id="brand-title"> ... </span>
+                    <span class="brand-title" id="brand-title"> </span>
                     <span class="brand-subtitle" id="brand-sub"> </span>
                 </div>
             </div>
@@ -116,9 +119,7 @@
         </div>
     </nav>
 
-    <!-- O CABEÇALHO DIVIDIDO EM DUAS COLUNAS -->
     <div class="search-filter-container">
-        
         <!-- Coluna Esquerda: A Imagem -->
         <div class="coluna-imagem" style="flex: 1; min-width: 250px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <img src="https://..." style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
@@ -158,7 +159,6 @@
 
     <main class="activities-grid" id="grid"></main>
 
-    <!-- MODAL DE INTENÇÃO DE VAGAS -->
     <div class="modal" id="modal-fila">
         <div class="modal-box">
             <button class="modal-close" onclick="fecharModal()"><i class="ri-close-line"></i></button>
@@ -215,7 +215,6 @@
             return match && match[1] ? `https://lh3.googleusercontent.com/d/${match[1]}` : url.trim();
         }
 
-        // ⭐ MÁGICA DAS CORES INTELIGENTES
         function getCategoryColor(cat) {
             const str = cat.toLowerCase();
             if (/esporte|movimento|físic|ginástica|futebol|natação|luta/.test(str)) return { bg: 'rgba(16, 185, 129, 0.15)', text: '#10b981' }; 
@@ -229,9 +228,11 @@
 
         async function buscarDadosDoGoogle() {
             try {
-                // ⭐ DESTRUIDOR DE CACHE: Garante que ele vai puxar sua alteração do Admin NA HORA!
+                // ⭐ DESTRUIDOR DE CACHE NIVEL MILITAR! Garante que sempre vai buscar o status exato!
                 const antiCache = new Date().getTime();
-                const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache);
+                const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache, {
+                    method: 'GET', headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }, cache: 'no-store'
+                });
                 const data = await response.json();
                 
                 if (data.sucesso) processarDados(data.turmas, data.configuracoes);
@@ -386,14 +387,13 @@
                     detalhesHtml += `</div>`;
                 });
 
-                // ⭐ A CORREÇÃO FINAL: Força a abertura se o Admin mandou!
+                // ⭐ A DECISÃO SOBERANA DO STATUS (FANTASMA DA PLANILHA EXORCIZADO)
                 let isFila = false;
                 if (setupGlobal.enrollmentClosedIdsArray && setupGlobal.enrollmentClosedIdsArray.includes(idInterno)) {
-                    isFila = true; // O Admin mandou fechar!
+                    isFila = true; // Admin mandou fechar.
                 } else if (setupGlobal.enrollmentOpenIdsArray && setupGlobal.enrollmentOpenIdsArray.includes(idInterno)) {
-                    isFila = false; // O Admin mandou abrir! (Ignora a planilha nativa)
+                    isFila = false; // Admin mandou abrir, IGNORA O QUE A PLANILHA DIZ.
                 } else {
-                    // Se o Admin nunca tocou no botão, olha a planilha nativa!
                     const vagasTxt = String(t['VAGAS'] || t['Status'] || t[keys[6]] || '');
                     if (/esgotad|lotad|lista|fila/i.test(vagasTxt)) isFila = true;
                 }

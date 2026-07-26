@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Atividades | Centro Educacional</title>
+    <meta name="description" content="Acompanhe as turmas, horários e vagas do nosso Centro Educacional.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // =========================================================================
+        // 🔗 PONTE DE CONEXÃO COM O COFRE (GOOGLE APPS SCRIPT)
+        // =========================================================================
+        // COLE AQUI A URL DO SEU APP DA WEB DO GOOGLE (QUE TERMINA EM /exec)
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwib78hd41QOPPOXt4CHtGbqiEcF4ICDqAfXsMzSg8gRVyJ1vnA74vBkPjgioBz1bDn/exec';
+    </script>
+
+    <style>
+        :root, [data-theme="dark"] {
+            --bg-primary: #0b0f19; --bg-secondary: #111827; --bg-card: rgba(30, 41, 59, 0.6); 
+            --bg-card-hover: rgba(51, 65, 85, 0.7); --bg-glass: rgba(15, 23, 42, 0.75); 
+            --border-color: rgba(255, 255, 255, 0.08); --text-primary: #f8fafc; 
+            --text-secondary: #94a3b8; --text-muted: #64748b; --accent-primary: #6366f1; 
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #06b6d4 100%);
+            --success-color: #10b981; --warning-color: #f59e0b; --danger-color: #ef4444; 
+            --radius-md: 12px; --radius-xl: 24px; --font-sans: 'Inter', sans-serif; --font-heading: 'Outfit', sans-serif;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f8fafc; --bg-secondary: #f1f5f9; --bg-card: rgba(255, 255, 255, 0.85); 
+            --bg-card-hover: rgba(255, 255, 255, 1); --bg-glass: rgba(255, 255, 255, 0.8); 
+            --border-color: rgba(0, 0, 0, 0.08); --text-primary: #0f172a; --text-secondary: #475569;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-sans); background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s; }
+        h1, h2, h3 { font-family: var(--font-heading); color: var(--text-primary); }
+        button, input, select { font-family: inherit; outline: none; border: none; background: none; }
+        button { cursor: pointer; }
+        .hidden { display: none !important; }
+
+        /* Fundo Animado */
+        .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        .glow-orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; transition: all 1s ease; }
+        .orb-1 { top: -10%; left: 15%; width: 50vw; height: 50vw; background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%); }
+        .orb-2 { bottom: -15%; right: -10%; width: 45vw; height: 45vw; background: radial-gradient(circle, #3b82f6 0%, transparent 70%); }
+
+        /* Navegação */
+        .navbar { position: sticky; top: 0; z-index: 50; background: var(--bg-glass); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 0.85rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+        .brand-icon { width: 42px; height: 42px; border-radius: var(--radius-md); background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; overflow: hidden;}
+        .brand-title { font-family: var(--font-heading); font-weight: 800; font-size: 1.15rem; }
+        .brand-subtitle { font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; }
+        .btn-icon { display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 1.2rem; transition: all 0.2s; }
+        .btn-icon:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+
+        /* Filtros e Busca */
+        .search-filter-container { max-width: 900px; margin: 2rem auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm); backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 1.25rem; }
+        .search-box { position: relative; display: flex; align-items: center; }
+        .search-box i { position: absolute; left: 1rem; color: var(--text-muted); font-size: 1.2rem; }
+        #search-input { width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }
+        
+        .filter-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .filter-pill { padding: 0.4rem 0.95rem; border-radius: 99px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+        .filter-pill.active { background: var(--accent-gradient); color: white; border-color: transparent; }
+
+        .results-bar { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;}
+        .sort-select { padding: 0.5rem; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); }
+
+        /* Grid e Cartões */
+        .activities-grid { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; width: 100%;}
+        .activity-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; transition: transform 0.2s; }
+        .activity-card:hover { transform: translateY(-5px); background: var(--bg-card-hover); border-color: var(--border-highlight); }
+        .activity-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-gradient); }
+        .activity-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;}
+        .activity-category { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(99, 102, 241, 0.15); color: #818cf8; text-transform: uppercase; font-weight: bold; }
+        
+        .detail-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;}
+        .detail-row i { color: var(--accent-primary); }
+        .detail-value { font-weight: 600; color: var(--text-primary); }
+        
+        .enroll-btn { width: 100%; padding: 0.75rem; border-radius: var(--radius-md); font-weight: bold; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 0.5rem;}
+        .btn-open { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; }
+        .btn-open:hover { background: #10b981; color: white; }
+        .btn-closed { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
+        .btn-closed:hover { background: #f59e0b; color: white; }
+
+        /* Modal Fila de Espera */
+        .modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+        .modal.active { display: flex; }
+        .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; width: 100%; max-width: 450px; position: relative; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
+        .form-input { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); }
+        .btn-submit { background: var(--accent-gradient); color: white; padding: 0.8rem; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 1rem;}
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loading { animation: spin 1s linear infinite; display: inline-block;}
+    </style>
+</head>
+<body>
+
+    <div class="bg-mesh">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon" id="brand-logo"><i class="ri-graduation-cap-fill"></i></div>
+                <div class="brand-text">
+                    <span class="brand-title" id="brand-title">Centro Educacional</span>
+                    <span class="brand-subtitle" id="brand-sub">Portal de Atividades</span>
+                </div>
+            </div>
+            <button class="btn-icon" onclick="toggleTheme()"><i class="ri-sun-line" id="theme-icon"></i></button>
+        </div>
+    </nav>
+
+    <div class="search-filter-container">
+        <div class="search-box">
+            <i class="ri-search-2-line"></i>
+            <input type="text" id="search-input" placeholder="Buscar por modalidade, professor, local..." oninput="filtrarCards()">
+        </div>
+        <div class="filter-pills">
+            <button class="filter-pill active" onclick="setDia('Todos', this)">Todos</button>
+            <button class="filter-pill" onclick="setDia('Segunda', this)">Segunda</button>
+            <button class="filter-pill" onclick="setDia('Terça', this)">Terça</button>
+            <button class="filter-pill" onclick="setDia('Quarta', this)">Quarta</button>
+            <button class="filter-pill" onclick="setDia('Quinta', this)">Quinta</button>
+            <button class="filter-pill" onclick="setDia('Sexta', this)">Sexta</button>
+            <button class="filter-pill" onclick="setDia('Sábado', this)">Sábado</button>
+            <button class="filter-pill" onclick="setDia('Domingo', this)">Domingo</button>
+        </div>
+    </div>
+
+    <div class="results-bar">
+        <div style="color: var(--text-secondary); font-weight: 600;" id="contador"><i class="ri-loader-4-line loading"></i> Conectando ao Servidor...</div>
+        <select id="sort-select" class="sort-select" onchange="filtrarCards()">
+            <option value="padrao">Ordenação Padrão</option>
+            <option value="az">Por Modalidade (A-Z)</option>
+            <option value="prof">Por Professor (A-Z)</option>
+            <option value="vagas">Vagas Abertas Primeiro</option>
+        </select>
+    </div>
+
+    <main class="activities-grid" id="grid">
+        </main>
+
+    <div class="modal" id="modal-fila">
+        <div class="modal-box">
+            <button class="modal-close" onclick="fecharModal()"><i class="ri-close-line"></i></button>
+            <h2 style="margin-bottom: 0.5rem; color: var(--accent-primary);"><i class="ri-ticket-2-line"></i> Fila de Espera</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;" id="modal-turma-nome">Turma X</p>
+            
+            <input type="hidden" id="fila-id-turma">
+            <input type="text" id="fila-nome" class="form-input" placeholder="Nome Completo do Aluno">
+            <input type="tel" id="fila-telefone" class="form-input" placeholder="Telefone / WhatsApp">
+            <input type="email" id="fila-email" class="form-input" placeholder="E-mail de Contato">
+            
+            <button class="btn-submit" id="btn-salvar-fila" onclick="enviarFilaEspera()">
+                Entrar na Fila de Espera
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let turmasGlobais = [];
+        let configGlobal = [];
+        let diaAtivo = 'Todos';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if(API_URL.includes('COLE_AQUI')) {
+                Swal.fire('Atenção', 'Você esqueceu de colar a URL do seu Web App no código HTML!', 'error');
+                return;
+            }
+            buscarDadosDoGoogle();
+        });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            icon.className = isDark ? 'ri-moon-line' : 'ri-sun-line';
+        }
+
+        async function buscarDadosDoGoogle() {
+            try {
+                // A requisição GET que fura bloqueios e pega os dados da API em formato JSON
+                const response = await fetch(API_URL + '?action=getPublicData');
+                const data = await response.json();
+                
+                if (data.sucesso) {
+                    processarDados(data.turmas, data.configuracoes);
+                } else {
+                    Swal.fire('Erro na Base', data.erro, 'error');
+                }
+            } catch (err) {
+                document.getElementById('contador').innerText = "Erro de Conexão. O WebApp está publicado para Qualquer Pessoa?";
+                console.error(err);
+            }
+        }
+
+        function processarDados(matrizTurmas, configLinha1) {
+            if (matrizTurmas.length <= 1) {
+                document.getElementById('contador').innerText = "Nenhuma turma cadastrada.";
+                return;
+            }
+            
+            // Lemos a Linha 1 da aba Configurações que o Admin gravou
+            if(configLinha1 && configLinha1.length > 1) {
+                try {
+                    const setup = JSON.parse(configLinha1[1] || '{}'); // Coluna B
+                    if(setup.centerName) document.getElementById('brand-title').innerText = setup.centerName;
+                    if(setup.centerSubtitle) document.getElementById('brand-sub').innerText = setup.centerSubtitle;
+                    if(setup.logoUrl) document.getElementById('brand-logo').innerHTML = `<img src="${setup.logoUrl}" style="width:100%;height:100%;object-fit:cover;">`;
+                    
+                    // Aqui aplicaríamos a regra das colunas ocultas e de layout!
+                    // (Lógica completa de colunas ocultas será no próximo nível com o Admin!)
+                } catch(e){}
+            }
+
+            const headers = matrizTurmas[0].map(h => String(h).trim());
+            
+            turmasGlobais = matrizTurmas.slice(1).map((row, idx) => {
+                let obj = { _originalIndex: idx };
+                headers.forEach((h, i) => obj[h || `Col_${i}`] = row[i] || '');
+                return obj;
+            });
+
+            filtrarCards();
+        }
+
+        function setDia(dia, btnElement) {
+            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            diaAtivo = dia;
+            filtrarCards();
+        }
+
+        function filtrarCards() {
+            const busca = document.getElementById('search-input').value.toLowerCase();
+            const sort = document.getElementById('sort-select').value;
+            
+            let filtradas = turmasGlobais.filter(t => {
+                const values = Object.values(t).join(' ').toLowerCase();
+                const matchBusca = busca === '' || values.includes(busca);
+                
+                let matchDia = true;
+                if (diaAtivo !== 'Todos') {
+                    // Tenta achar o dia nas colunas prováveis
+                    const valDias = (t['DIAS'] || t['Dias'] || t['Dia'] || values).toLowerCase();
+                    matchDia = valDias.includes(diaAtivo.toLowerCase()) || valDias.includes(diaAtivo.substring(0,3).toLowerCase());
+                }
+                return matchBusca && matchDia;
+            });
+
+            // Ordenação
+            if(sort === 'az') filtradas.sort((a,b) => String(Object.values(a)[0]).localeCompare(String(Object.values(b)[0])));
+            if(sort === 'prof') filtradas.sort((a,b) => String(a['PROFESSOR'] || a['Educador'] || '').localeCompare(String(b['PROFESSOR'] || b['Educador'] || '')));
+            if(sort === 'vagas') {
+                filtradas.sort((a,b) => {
+                    const statusA = /esgotad|lotad|fila/i.test(String(a['VAGAS']||a['Status']||''));
+                    const statusB = /esgotad|lotad|fila/i.test(String(b['VAGAS']||b['Status']||''));
+                    return (statusA === statusB) ? 0 : statusA ? 1 : -1;
+                });
+            }
+
+            desenharTela(filtradas);
+        }
+
+        function getIcone(texto) {
+            const lower = texto.toLowerCase();
+            if(/hora|das|às/i.test(lower)) return 'ri-time-line';
+            if(/dia/i.test(lower)) return 'ri-calendar-event-line';
+            if(/sala|local/i.test(lower)) return 'ri-map-pin-line';
+            if(/prof/i.test(lower)) return 'ri-user-star-line';
+            return 'ri-arrow-drop-right-line';
+        }
+
+        function desenharTela(turmas) {
+            const grid = document.getElementById('grid');
+            document.getElementById('contador').innerText = `Exibindo ${turmas.length} turma(s)`;
+            
+            if (turmas.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">Nenhuma turma encontrada.</div>';
+                return;
+            }
+
+            grid.innerHTML = turmas.map(t => {
+                const keys = Object.keys(t).filter(k => k !== '_originalIndex');
+                const titulo = t[keys[0]] || 'Turma sem nome';
+                const professor = t['PROFESSOR'] || t['Educador'] || t[keys[5]] || '';
+                const vagasTxt = String(t['VAGAS'] || t['Status'] || t[keys[6]] || '');
+                const vagasEsgotadas = /esgotad|lotad|lista de espera|fila/i.test(vagasTxt);
+
+                // Monta as linhas dinâmicas de detalhes (pegando colunas específicas)
+                let detalhesHtml = '';
+                keys.forEach((colName, i) => {
+                    // Pula colunas que já usamos em destaque ou ID
+                    if(colName === keys[0] || colName.toUpperCase() === 'PROFESSOR' || /vaga|status/i.test(colName) || /ID/i.test(colName)) return;
+                    if(t[colName].trim() !== '') {
+                        detalhesHtml += `
+                        <div class="detail-row">
+                            <i class="${getIcone(colName)}"></i> 
+                            <span class="detail-label">${colName}:</span>
+                            <span class="detail-value">${t[colName]}</span>
+                        </div>`;
+                    }
+                });
+
+                const idInterno = t['CÓDIGO EOL'] || t['ID'] || titulo;
+
+                const botaoAcao = vagasEsgotadas 
+                    ? `<button class="enroll-btn btn-closed" onclick="abrirFila('${idInterno}', '${titulo}')"><i class="ri-ticket-2-line"></i> Entrar na Fila de Espera</button>`
+                    : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', 'Compareça à secretaria com seus documentos para realizar a matrícula.', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
+
+                return `
+                <div class="activity-card">
+                    <span class="activity-category">${t['NÚCLEO'] || t['Categoria'] || 'Geral'}</span>
+                    <h3 class="activity-title">${titulo}</h3>
+                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;"><i class="ri-user-star-line"></i> ${professor}</div>
+                    
+                    <div style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 1rem 0; margin-bottom: 1rem;">
+                        ${detalhesHtml}
+                    </div>
+                    
+                    ${botaoAcao}
+                </div>`;
+            }).join('');
+        }
+
+        // =====================================
+        // MODAL E POST DE FILA DE ESPERA
+        // =====================================
+        function abrirFila(idTurma, titulo) {
+            document.getElementById('fila-id-turma').value = idTurma;
+            document.getElementById('modal-turma-nome').innerText = "Vaga desejada: " + titulo;
+            document.getElementById('modal-fila').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-fila').classList.remove('active');
+            document.getElementById('fila-nome').value = '';
+            document.getElementById('fila-telefone').value = '';
+            document.getElementById('fila-email').value = '';
+        }
+
+        async function enviarFilaEspera() {
+            const nome = document.getElementById('fila-nome').value;
+            const telefone = document.getElementById('fila-telefone').value;
+            const email = document.getElementById('fila-email').value;
+            const turma = document.getElementById('modal-turma-nome').innerText;
+
+            if(!nome || !telefone) return Swal.fire('Atenção', 'Nome e Telefone são obrigatórios!', 'warning');
+
+            const btn = document.getElementById('btn-salvar-fila');
+            btn.innerHTML = '<i class="ri-loader-4-line loading"></i> Gerando Ticket...';
+            btn.disabled = true;
+
+            const payload = {
+                action: 'entrarFilaEspera',
+                idTurma: document.getElementById('fila-id-turma').value,
+                modalidade: turma,
+                nomeAluno: nome,
+                telefone: telefone,
+                email: email
+            };
+
+            try {
+                // Requisição POST segura via fetch API
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+                
+                if(data.sucesso) {
+                    Swal.fire({
+                        title: 'Ticket Gerado!',
+                        html: `Sua posição na fila de espera foi registrada.<br><br><b style="font-size:2rem; color:#6366f1;">${data.ticket}</b><br><br>Guarde este número de protocolo.`,
+                        icon: 'success'
+                    }).then(() => { fecharModal(); });
+                } else {
+                    Swal.fire('Erro', data.erro, 'error');
+                }
+            } catch (err) {
+                Swal.fire('Erro', 'Falha ao comunicar com a secretaria.', 'error');
+                console.error(err);
+            } finally {
+                btn.innerHTML = 'Entrar na Fila de Espera';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -6,16 +6,15 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>CEU CAMINHO DO MAR</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Portal de Atividades | Centro Educacional</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // =========================================================================
-        // 🔗
+        // 🔗 PONTE DE CONEXÃO COM A API DO GOOGLE APPS SCRIPT
         // =========================================================================
         const API_URL = 'https://script.google.com/macros/s/AKfycbwib78hd41QOPPOXt4CHtGbqiEcF4ICDqAfXsMzSg8gRVyJ1vnA74vBkPjgioBz1bDn/exec';
     </script>
@@ -66,6 +65,11 @@
         .filter-pill { padding: 0.4rem 0.95rem; border-radius: 99px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
         .filter-pill.active { background: var(--accent-gradient); color: white; border-color: transparent; }
 
+        /* ⭐ Estilo dos Botões de Redes Sociais que você pediu! */
+        .social-bar { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; justify-content: flex-start; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-color); }
+        .btn-social { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; border-radius: 99px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: 0.2s; }
+        .btn-social:hover { background: rgba(99, 102, 241, 0.15); border-color: var(--accent-primary); color: var(--accent-primary); transform: translateY(-2px); }
+
         .results-bar { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); width: 100%;}
         .sort-select { padding: 0.6rem; border-radius: var(--radius-md); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); font-weight: 600; width: 100%; max-width: 250px;}
 
@@ -102,81 +106,7 @@
             .coluna-imagem { display: none !important; } 
             .coluna-direita { width: 100% !important; }
         }
-
-<style>
-  /* Importa a fonte Inter do Google Fonts */
-  @import url('https://googleapis.com');
-
-  /* Estilização Geral do Modal */
-  dialog {
-    border: none;
-    border-radius: 12px;
-    padding: 24px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    max-width: 400px;
-    width: 100%;
-   text-align: center; 
-    /* Define a fonte padrão para todo o modal */
-    font-family: 'Inter', sans-serif; 
-  }
-
-  /* Customização do Título */
-  dialog h2 {
-    font-size: 24px;       /* Tamanho maior para o título */
-    font-weight: 700;      /* Texto em negrito pesado */
-    color: #1a1a1a;        /* Cor cinza escuro quase preto */
-    margin-top: 0;         /* Remove espaço extra acima */
-  }
-
-  /* Customização do Parágrafo */
-  dialog p {
-    font-size: 15px;       /* Tamanho padrão de leitura */
-    font-weight: 400;      /* Texto com peso normal */
-    color: #4a4a4a;        /* Cor cinza intermediária */
-    line-height: 1.5;      /* Espaçamento entre as linhas */
-    /* Aplica espaço apenas ENTRE os parágrafos */
-
-  }
-
-  /* Customização do Botão */
-  .btn-fechar {
-    font-family: 'Calibri', sans-serif;
-    font-size: 14px;
-    font-weight: 600;      /* Negrito médio */
-    background-color: #007bff; /* Azul moderno */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 15px;
-
-  }
-
-  /* Efeito ao passar o mouse no botão */
-  .btn-fechar:hover {
-    background-color: #0056b3;
-  }
-
-/* Aplica espaço apenas ENTRE os parágrafos */
-dialog p:not(:last-of-type) {
-  margin-bottom: 16px; 
-}
-
-  /* Fundo Escurecido */
-  dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-  }
-</style>
-
-
-
-
-
     </style>
-
 </head>
 <body>
     <div class="bg-mesh"><div class="glow-orb orb-1"></div><div class="glow-orb orb-2"></div></div>
@@ -187,59 +117,40 @@ dialog p:not(:last-of-type) {
                 <div class="brand-icon" id="brand-logo"><i class="ri-graduation-cap-fill"></i></div>
                 <div class="brand-text">
                     <span class="brand-title" id="brand-title"> </span>
-                    <span class="brand-subtitle" id="brand-sub"> siga o CEU nas redes sociais: </span>
-                   <span class="brand-subtitle"><a href="https://instagram.com/ceucaminhodomar_oficial" target="_blank"><i class="fa-brands fa-instagram"></i>Instagram</a></span><span> | </span>
-                   <span class="brand-subtitle"><a href="https://facebook.com/ceucaminhodomar" target="_blank"><i class="fa-brands fa-facebook"></i>Facebook</a></span><span> | </span>
-                    <span class="brand-subtitle"><a href="https://whatsapp.com/channel/0029VaoiNudFsn0nTiv1Gb1z" target="_blank"><i class="fa-brands fa-whatsapp"></i>WhatsApp</a></span>
-                    <span class="brand-subtitle">Telefone: 3396-5600</span>
-                    <!-- Botão para abrir o modal -->
-                    <button onclick="document.getElementById('meuModal').showModal()"> <a>Documentos para a emitir a carteirinha</a> </button>
-
-                    <!-- Janela Modal -->
-<button onclick="document.getElementById('meuModal').showModal()">Abrir Modal</button>
-
-<!-- Janela Modal -->
-<dialog id="meuModal">
-  <h2> 🪪 Para emitir a carteirinha é necessário: </h2>
-  
-  <p>📍 Cópia legível do CIN ou documento com foto;</p>
-  
-  <p>📍 Cópia legível do comprovante de endereço;</p>
-  
-  <p>📍 Cópia legível do CIN ou da certidão de nascimento da criança;</p>
-  
-  <p><i> 📸 Tiramos foto na hora </i></p>
-
-
-  <button class="btn-fechar" onclick="document.getElementById('meuModal').close()"> ❎ Fechar </button>
-</dialog>
-
-
-
-
-
-
-
-
-
-
-
-
+                    <span class="brand-subtitle" id="brand-sub"> </span>
                 </div>
             </div>
+            <div class="social-bar">
+                <a href="https://instagram.com/ceucaminhodomar_oficial" target="_blank" class="btn-social">
+                    <i class="ri-instagram-line"></i> Instagram
+                </a>
+                <a href="https://facebook.com/ceucaminhodomar" target="_blank" class="btn-social">
+                    <i class="ri-facebook-circle-fill"></i> Facebook
+                </a>
+                <a href="https://whatsapp.com/channel/0029VaoiNudFsn0nTiv1Gb1z" target="_blank" class="btn-social">
+                    <i class="ri-whatsapp-line"></i> Canal WhatsApp
+                </a>
+                <span class="btn-social" style="pointer-events: none; border-color: transparent; background: transparent;">
+                    <i class="ri-phone-line"></i> 3396-5600
+                </span>
+                
+                <button class="btn-social" style="background: var(--accent-gradient); color: white; border: none; margin-left: auto;" onclick="mostrarModalDocumentos()">
+                    <i class="ri-profile-line"></i> Documentos Necessários
+                </button>
+
+
+
             <button class="btn-icon" onclick="toggleTheme()"><i class="ri-moon-line" id="theme-icon"></i></button>
         </div>
     </nav>
 
     <div class="search-filter-container">
-        <!-- Coluna Esquerda: A Imagem -->
         <div class="coluna-imagem" style="flex: 1; min-width: 250px; border-radius: var(--radius-xl); overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <img src="https://..." style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover;" id="img-destaque" alt="Destaque">
         </div>
 
-        <!-- Coluna Direita: Buscas e Filtros -->
         <div class="coluna-direita" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; justify-content: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <span> <h1> Portal de Atividades e Lista de Espera</h1></span>
+            
             <div style="display: flex; justify-content: flex-end;">
                 <select id="sort-select" class="sort-select" onchange="filtrarCards()">
                     <option value="padrao">Ordenar por: Padrão do Sistema</option>
@@ -262,6 +173,9 @@ dialog p:not(:last-of-type) {
                 <button class="filter-pill" onclick="setDia('Sexta', this)">Sexta</button>
                 <button class="filter-pill" onclick="setDia('Sábado', this)">Sábado</button>
                 <button class="filter-pill" onclick="setDia('Domingo', this)">Domingo</button>
+            </div>
+
+
             </div>
         </div>
     </div>
@@ -322,6 +236,27 @@ dialog p:not(:last-of-type) {
             icon.className = isDark ? 'ri-moon-line' : 'ri-sun-line';
         }
 
+        // ⭐ NOVO: FUNÇÃO PARA MOSTRAR OS DOCUMENTOS USANDO O SWEETALERT
+        function mostrarModalDocumentos() {
+            Swal.fire({
+                title: '🪪 Documentos Necessários',
+                html: `
+                    <div style="text-align: left; font-size: 0.95rem; line-height: 1.6; margin-top: 15px;">
+                        <p>Para emitir a carteirinha e garantir sua vaga, traga os seguintes documentos até a secretaria do CEU:</p>
+                        <br>
+                        <p>📍 Cópia legível do <b>RG, CNH ou CIN</b> (Documento com foto);</p>
+                        <p>📍 Cópia legível de um <b>Comprovante de Endereço</b> recente;</p>
+                        <p>📍 No caso de menores: Cópia legível da <b>Certidão de Nascimento</b>;</p>
+                        <br>
+                        <p><i>📸 Não se preocupe com a foto, nós tiramos na hora!</i></p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonText: 'Entendi!',
+                confirmButtonColor: '#6366f1'
+            });
+        }
+
         function convertGoogleDriveUrl(url) {
             if (!url) return '';
             const match = url.trim().match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=|uc\?export=view&id=)|docs\.google\.com\/file\/d\/)([a-zA-Z0-9_-]{25,})/i);
@@ -341,7 +276,6 @@ dialog p:not(:last-of-type) {
 
         async function buscarDadosDoGoogle() {
             try {
-                // ⭐ DESTRUIDOR DE CACHE TOTAL E ABSOLUTO
                 const antiCache = new Date().getTime() + Math.random();
                 const response = await fetch(API_URL + '?action=getPublicData&nocache=' + antiCache, {
                     cache: 'no-store'
@@ -403,7 +337,7 @@ dialog p:not(:last-of-type) {
             };
 
             let filtradas = turmasGlobais.filter(t => {
-                // IDENTIDADE BLINDADA PELO CÓDIGO DA PRIMEIRA COLUNA
+                const titulo = getColValue(t, map.titleColumn, 0, /turma|atividade|curso/i) || `Atividade ${t._originalIndex + 1}`;
                 const baseIdStr = t[keys[0]] !== undefined ? String(t[keys[0]]) : '';
                 const idInterno = `turma_${t._originalIndex + 1}_${baseIdStr.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 
@@ -469,10 +403,10 @@ dialog p:not(:last-of-type) {
                     return '';
                 };
 
+                const tituloRealDaColuna = map.titleColumn || keys.find(k => /turma|atividade|curso/i.test(k)) || keys[0];
                 const titulo = getColValue(map.titleColumn, 0, /turma|atividade|curso/i) || `Atividade ${t._originalIndex + 1}`;
                 const category = getColValue(map.categoryColumn, 4, /núcleo|centro/i) || 'Geral';
                 
-                // ⭐ A IDENTIDADE BLINDADA (Usa sempre a Coluna 1 da Planilha Nativa)
                 const baseIdStr = t[keys[0]] !== undefined ? String(t[keys[0]]) : '';
                 const idInterno = `turma_${t._originalIndex + 1}_${baseIdStr.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 
@@ -481,8 +415,6 @@ dialog p:not(:last-of-type) {
                     if (map.teacherColumn && t[map.teacherColumn]) { professor = t[map.teacherColumn]; profReal = map.teacherColumn; } 
                     else { const pKey = keys.find(k => /prof|educador/i.test(k)) || keys[5]; if(pKey) { professor = t[pKey]; profReal = pKey; } }
                 }
-
-                const tituloRealDaColuna = map.titleColumn || keys.find(k => /turma|atividade|curso/i.test(k)) || keys[0];
 
                 let linhas = {};
                 keys.forEach((colName, i) => {

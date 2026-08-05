@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
-    <title>Portal de Atividades | Centro Educacional</title>
+    <title>Portal de Atividades</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
@@ -464,10 +464,10 @@
 
                 // ⭐ AQUI NÓS APENAS PUXAMOS A PROPRIEDADE JÁ CALCULADA NA NOVIDADE 1
                 const isFila = t.isFila;
-
+                // MENSAGEM (MODAL) SOBRE MATRÍCULAS ABERTAS! deixei o título em branco: onclick="Swal.fire('', '${msgMatricula}', 'info')
                 const botaoAcao = isFila 
                     ? `<button class="enroll-btn btn-closed" onclick="abrirFila('${idInterno}', '${titulo.replace(/'/g,"\\'")}')"><i class="ri-ticket-2-line"></i> Entrar na Fila de Espera</button>`
-                    : `<button class="enroll-btn btn-open" onclick="Swal.fire('Matrículas Abertas!', '${msgMatricula}', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
+                    : `<button class="enroll-btn btn-open" onclick="Swal.fire('', '${msgMatricula}', 'info')"><i class="ri-check-double-line"></i> Informações de Matrícula</button>`;
 
                 const corTag = getCategoryColor(category);
 
